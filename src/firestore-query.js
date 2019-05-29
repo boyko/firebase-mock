@@ -169,7 +169,7 @@ MockFirestoreQuery.prototype.onSnapshot = function (optionsOrObserverOrOnNext, o
     // and send the data to the callback if different.
     if (err === null) {
       self.get().then(function (querySnapshot) {
-        var results = self._results();
+        var results = self._results() || {results: {}, keyOrder: []};
 
         var added = {};
         var removed = {};
@@ -192,8 +192,9 @@ MockFirestoreQuery.prototype.onSnapshot = function (optionsOrObserverOrOnNext, o
         var hasAdditions = Object.keys(added).length > 0;
         var hasRemovals = Object.keys(removed).length > 0;
         var hasModififations = Object.keys(modified).length > 0;
+        var isEmptyResultSet = Object.keys(results).length === 0;
 
-        if (hasAdditions || hasRemovals || hasModififations || includeMetadataChanges) {
+        if (hasAdditions || hasRemovals || hasModififations || includeMetadataChanges || isEmptyResultSet) {
           onNext(new QuerySnapshot(self.parent === null ? self : self.parent.collection(self.id), results.results, results.keyOrder, {added, removed, modified}));
           // onNext(new QuerySnapshot(self.id, self.ref, results));
           context.data = results;

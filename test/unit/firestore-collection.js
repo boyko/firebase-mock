@@ -481,6 +481,14 @@ describe('MockFirestoreCollection', function () {
       // collection.flush();
     });
 
+    it('should call callback even if result set is empty', function(done) {
+      db.autoFlush();
+      var col = db.collection('empty_collection');
+      col.onSnapshot(function(snap) {
+        done();
+      });
+    });
+
     it('calls callback after multiple updates', function (done) {
       var callCount = 0;
       collection.onSnapshot(function(snap) {
